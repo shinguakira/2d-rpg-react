@@ -26,7 +26,7 @@ app.use(
 );
 
 // Game state
-let gameState: GameState = {
+const gameState: GameState = {
   players: [],
   gameTime: Date.now(),
   status: 'active',
