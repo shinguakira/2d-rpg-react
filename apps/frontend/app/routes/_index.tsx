@@ -2,6 +2,7 @@ import type { MetaFunction } from '@remix-run/node';
 import { useState } from 'react';
 import GameCanvas from '~/components/GameCanvas';
 import TitlePage from '~/components/TitlePage';
+import KingsRoom from '~/components/KingsRoom';
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,16 +12,27 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const [gameStarted, setGameStarted] = useState(false);
+  const [gameState, setGameState] = useState<'title' | 'kingsRoom' | 'game'>('title');
 
   const handleStartGame = () => {
-    setGameStarted(true);
+    setGameState('kingsRoom');
+  };
+
+  const handleExitKingsRoom = () => {
+    setGameState('game');
   };
 
   return (
     <>
-      {!gameStarted ? (
+      {gameState === 'title' ? (
         <TitlePage onStartGame={handleStartGame} />
+      ) : gameState === 'kingsRoom' ? (
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+          <div className="max-w-6xl w-full">
+            <h1 className="text-3xl font-bold text-white mb-8 text-center">King's Throne Room</h1>
+            <KingsRoom onExitRoom={handleExitKingsRoom} />
+          </div>
+        </div>
       ) : (
         <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
           <div className="max-w-6xl w-full">
