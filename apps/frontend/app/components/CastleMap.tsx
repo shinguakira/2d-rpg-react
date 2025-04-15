@@ -85,6 +85,9 @@ export default function CastleMap({ map, onExitMap }: CastleMapProps) {
       tile => tile.type === 'door' && tile.x === playerPosition.x && tile.y === playerPosition.y
     );
     
+    console.log('Player position:', playerPosition.x, playerPosition.y);
+    console.log('Checking for door at player position');
+    
     if (doorTile && onExitMap) {
       console.log('Exiting map through door at:', playerPosition.x, playerPosition.y);
       onExitMap();
