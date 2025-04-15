@@ -2,6 +2,8 @@ import type { MetaFunction } from '@remix-run/node';
 import { useState } from 'react';
 import GameCanvas from '~/components/GameCanvas';
 import TitlePage from '~/components/TitlePage';
+import CastleMap from '~/components/CastleMap';
+import { castleMap } from '~/lib/mapData';
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,16 +13,27 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const [gameStarted, setGameStarted] = useState(false);
+  const [gameState, setGameState] = useState<'title' | 'castle' | 'game'>('title');
 
   const handleStartGame = () => {
-    setGameStarted(true);
+    setGameState('castle');
+  };
+
+  const handleExitCastle = () => {
+    setGameState('game');
   };
 
   return (
     <>
-      {!gameStarted ? (
+      {gameState === 'title' ? (
         <TitlePage onStartGame={handleStartGame} />
+      ) : gameState === 'castle' ? (
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+          <div className="max-w-6xl w-full">
+            <h1 className="text-3xl font-bold text-white mb-8 text-center">Castle Throne Room</h1>
+            <CastleMap map={castleMap} onExitMap={handleExitCastle} />
+          </div>
+        </div>
       ) : (
         <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
           <div className="max-w-6xl w-full">
