@@ -1,12 +1,13 @@
-interface GameUIProps {
-  playerHealth: number;
-  score: number;
-  gameTime?: number;
-}
+import { useAtomValue } from 'jotai';
+import { gameTimeAtom } from '~/lib/store';
 
-export default function GameUI({ playerHealth, score, gameTime = 0 }: GameUIProps) {
+export default function GameUI() {
+  const gameTime = useAtomValue(gameTimeAtom);
+  const playerHealth = 100; // This would come from a store in a full implementation
+  const score = 0; // This would come from a store in a full implementation
+  
   const formatTime = (timeInMs: number) => {
-    const totalSeconds = Math.floor(timeInMs / 1000);
+    const totalSeconds = Math.floor((Date.now() - timeInMs) / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;

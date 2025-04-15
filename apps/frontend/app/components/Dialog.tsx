@@ -1,38 +1,38 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface DialogProps {
-  text: string | null;
-  onClose: () => void;
-}
+import { useAtom } from 'jotai';
+import { dialogTextAtom, isDialogVisibleAtom } from '~/lib/store';
 
 const variants = {
   open: { opacity: 1, scale: 1, y: 0 },
   closed: { opacity: 0, scale: 0.8, y: 20 },
 };
 
-export default function Dialog({ text, onClose }: DialogProps) {
+export default function Dialog() {
+  const [dialogText, setDialogText] = useAtom(dialogTextAtom);
+  const [isDialogVisible, setIsDialogVisible] = useAtom(isDialogVisibleAtom);
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space' && text) {
+      if (e.code === 'Space' && dialogText && isDialogVisible) {
         setIsClosing(true);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [text]);
+  }, [dialogText, isDialogVisible]);
 
   const handleAnimationComplete = () => {
     if (isClosing) {
-      onClose();
+      setDialogText(null);
+      setIsDialogVisible(false);
       setIsClosing(false);
     }
   };
 
-  if (!text) return null;
+  if (!dialogText || !isDialogVisible) return null;
 
   return (
     <AnimatePresence>
@@ -44,7 +44,7 @@ export default function Dialog({ text, onClose }: DialogProps) {
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         onAnimationComplete={handleAnimationComplete}
       >
-        <p className="text-lg">{text}</p>
+        <p className="text-lg">{dialogText}</p>
         <p className="text-sm text-gray-400 mt-2">Press Space to continue</p>
       </motion.div>
     </AnimatePresence>
