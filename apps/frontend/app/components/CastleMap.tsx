@@ -62,13 +62,16 @@ export default function CastleMap({ map, onExitMap }: CastleMapProps) {
 
       if (isTileWalkable && !characterAtPosition) {
         setPlayerPosition({ x: newX, y: newY });
+        
+        if (playerCharacter) {
+          playerCharacter.x = newX;
+          playerCharacter.y = newY;
+        }
       }
 
       setFacingDirection(newDirection);
-
+      
       if (playerCharacter) {
-        playerCharacter.x = newX;
-        playerCharacter.y = newY;
         playerCharacter.direction = newDirection;
       }
     };
@@ -78,14 +81,29 @@ export default function CastleMap({ map, onExitMap }: CastleMapProps) {
   }, [playerPosition, facingDirection, showDialog, map, playerCharacter]);
 
   const handleInteraction = () => {
+    const doorTile = map.tiles.find(
+      tile => tile.type === 'door' && tile.x === playerPosition.x && tile.y === playerPosition.y
+    );
+    
+    if (doorTile && onExitMap) {
+      console.log('Exiting map through door at:', playerPosition.x, playerPosition.y);
+      onExitMap();
+      return; // Exit early after handling door interaction
+    }
+    
     const facingX = playerPosition.x + (facingDirection === 'right' ? 1 : facingDirection === 'left' ? -1 : 0);
     const facingY = playerPosition.y + (facingDirection === 'down' ? 1 : facingDirection === 'up' ? -1 : 0);
 
+    console.log('Checking interaction at:', facingX, facingY, 'Facing:', facingDirection);
+    
     const character = map.characters.find(
       char => char.id !== 'player' && char.x === facingX && char.y === facingY
     );
+    
+    console.log('Found character:', character);
 
     if (character && character.dialog.length > 0) {
+      console.log('Showing dialog for:', character.name);
       setActiveCharacter(character);
       setDialogIndex(0);
       setShowDialog(true);
