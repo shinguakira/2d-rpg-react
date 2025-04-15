@@ -1,0 +1,19 @@
+{
+  "name": "2d-rpg-react",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,md,json}\""
+  },
+  "devDependencies": {
+    "turbo": "^1.10.16",
+    "typescript": "^5.2.2",
+    "prettier": "^3.2.5"
+  }
+}
