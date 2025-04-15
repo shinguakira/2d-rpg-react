@@ -22,14 +22,10 @@ export default function Index() {
       {!gameStarted ? (
         <TitlePage onStartGame={handleStartGame} />
       ) : (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-          <div className="max-w-6xl w-full">
-            <h1 className="text-3xl font-bold text-white mb-8 text-center">Pudding Quest</h1>
-            <GameCanvas width={960} height={720} />
-            <div className="mt-4 text-gray-400 text-center">
-              <p>Use arrow keys to move</p>
-              <p>Approach NPCs and press Space to interact</p>
-            </div>
+        <div className="w-full h-screen overflow-hidden bg-black">
+          <GameCanvas width={1920} height={1080} />
+          <div className="absolute bottom-4 left-0 right-0 text-gray-400 text-center pointer-events-none">
+            <p>Use arrow keys to move • Press Space to interact</p>
           </div>
         </div>
       )}
