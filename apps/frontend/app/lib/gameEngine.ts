@@ -11,6 +11,7 @@ export interface GameState {
   player: Sprite;
   npcs: Sprite[];
   dialogText: string | null;
+  gameTime: number;
 }
 
 class GameEngine {
@@ -27,6 +28,7 @@ class GameEngine {
     },
     npcs: [],
     dialogText: null,
+    gameTime: Date.now(),
   };
 
   private keyState: { [key: string]: boolean } = {};

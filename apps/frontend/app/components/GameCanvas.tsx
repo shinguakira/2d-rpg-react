@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gameEngine, GameState } from '~/lib/gameEngine';
 import Dialog from './Dialog';
+import GameUI from './GameUI';
 
 interface GameCanvasProps {
   width: number;
@@ -31,7 +32,7 @@ export default function GameCanvas({ width, height }: GameCanvasProps) {
   };
 
   return (
-    <>
+    <div className="relative">
       <canvas
         ref={canvasRef}
         width={width}
@@ -42,7 +43,12 @@ export default function GameCanvas({ width, height }: GameCanvasProps) {
           backgroundColor: '#1a1a1a',
         }}
       />
+      <GameUI 
+        playerHealth={100} 
+        score={0} 
+        gameTime={gameState.gameTime ? Date.now() - gameState.gameTime : 0} 
+      />
       <Dialog text={gameState.dialogText} onClose={handleCloseDialog} />
-    </>
+    </div>
   );
 }
