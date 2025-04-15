@@ -1,18 +1,32 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "private": true,
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "lint": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\""
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@hono/node-server": "^1.14.1",
     "hono": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "prettier": "^3.5.3",
     "tsx": "^3.14.0",
     "typescript": "^5.2.2"
   }
