@@ -121,7 +121,7 @@ export const castleMap: GameMap = {
       type: 'door' as const,
       walkable: true,
       x: 7,
-      y: 12,
+      y: 29,
     },
   ],
   characters: [
