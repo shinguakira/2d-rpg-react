@@ -4,6 +4,7 @@ import { gameEngine, GameState } from '~/lib/gameEngine';
 import Dialog from './Dialog';
 import GameUI from './GameUI';
 import { dialogTextAtom, isDialogVisibleAtom, gameTimeAtom } from '~/lib/store';
+import TextBox from './TextBobackx';
 
 interface GameCanvasProps {
   width: number;
@@ -72,8 +73,7 @@ export default function GameCanvas({ width, height }: GameCanvasProps) {
           backgroundColor: '#1a1a1a',
         }}
       />
-      <GameUI />
-      <Dialog />
+      <TextBox />
     </div>
   );
 }

@@ -24,9 +24,6 @@ export default function Index() {
       ) : (
         <div className="w-full h-screen overflow-hidden bg-black">
           <GameCanvas width={1920} height={1080} />
-          <div className="absolute bottom-4 left-0 right-0 text-gray-400 text-center pointer-events-none">
-            <p>Use arrow keys to move • Press Space to interact</p>
-          </div>
         </div>
       )}
     </>

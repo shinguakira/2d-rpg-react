@@ -4,14 +4,15 @@ import { useAtom, useAtomValue } from 'jotai';
 import { dialogTextAtom, isDialogVisibleAtom } from '~/lib/store';
 
 const variants = {
-  open: { opacity: 1, scale: 1, y: 0 },
-  closed: { opacity: 0, scale: 0.8, y: 20 },
+  open: { opacity: 1, scale: 1 },
+  closed: { opacity: 0, scale: 0.5 },
 };
 
 export default function Dialog() {
   const [isDialogVisible, setIsDialogVisible] = useAtom(isDialogVisibleAtom);
   const dialogText = useAtomValue(dialogTextAtom);
   const [isClosing, setIsClosing] = useState(false);
+  console.log("Dialog rendering - isVisible:", isDialogVisible, "content:", dialogText);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -36,20 +37,21 @@ export default function Dialog() {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed bottom-0 left-0 w-full bg-black/90 text-white py-6 px-8 border-t-4 border-gray-700"
-        style={{
-          fontFamily: 'monospace',
-          height: '180px',
-          imageRendering: 'pixelated',
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 w-game min-h-[200px] bg-black/90 p-8 font-gameboy flex flex-col justify-center rounded-lg border border-font-color/20 z-50"
+        style={{ 
+          width: 'calc(min(90%, 1200px))',
+          color: 'var(--font-color)',
+          zIndex: 50,
+          display: isDialogVisible || isClosing ? 'flex' : 'none',
         }}
-        initial="closed"
+        initial={{ opacity: 0, scale: 0.5 }}
         animate={isClosing ? 'closed' : 'open'}
         variants={variants}
-        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        transition={{ duration: 0.2 }}
         onAnimationComplete={handleAnimationComplete}
       >
-        <p className="text-2xl mb-4" style={{ letterSpacing: '0.05em' }}>{dialogText}</p>
-        <p className="text-sm text-gray-400 mt-2">Press Space to continue</p>
+        <p className="text-2xl leading-relaxed tracking-wider m-0 p-0">{dialogText}</p>
+        <p className="text-sm text-gray-400 mt-4 text-right">Press Space to continue</p>
       </motion.div>
     </AnimatePresence>
   );
