@@ -2,7 +2,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/reac
 import type { LinksFunction } from '@remix-run/node';
 
 import './tailwind.css';
-import TextBox from './components/TextBobackx';
+import GameBoyTextBox from './components/GameBoyTextBox';
 
 // Add global styles to remove scrollbars
 const globalStyles = `
@@ -50,7 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="overflow-hidden">
         {children}
-        <TextBox />
+        <GameBoyTextBox />
         <ScrollRestoration />
         <Scripts />
       </body>
