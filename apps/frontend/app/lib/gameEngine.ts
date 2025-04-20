@@ -1,3 +1,5 @@
+import { store, keyBindingsAtom, KeyBindings } from './store';
+
 export interface Sprite {
   x: number;
   y: number;
@@ -11,6 +13,9 @@ export interface GameState {
   player: Sprite;
   npcs: Sprite[];
   dialogText: string | null;
+  dialogMessages: string[];
+  dialogIndex: number;
+  isInDialog: boolean;
   gameTime: number;
 }
 
@@ -28,12 +33,16 @@ class GameEngine {
     },
     npcs: [],
     dialogText: null,
+    dialogMessages: [],
+    dialogIndex: 0,
+    isInDialog: false,
     gameTime: Date.now(),
   };
 
   private keyState: { [key: string]: boolean } = {};
   private lastTimestamp: number = 0;
   private readonly PLAYER_SPEED = 200;
+  private keyBindings: KeyBindings;
 
   // Sprite resources
   private backgroundImage: HTMLImageElement | null = null;
@@ -52,6 +61,17 @@ class GameEngine {
     'npc-right': { x: 6, y: 1 },
     'npc-left': { x: 7, y: 1 },
   };
+
+  constructor() {
+    // Initialize with default keybindings
+    this.keyBindings = store.get(keyBindingsAtom);
+    
+    // Subscribe to keybinding changes
+    store.sub(keyBindingsAtom, () => {
+      this.keyBindings = store.get(keyBindingsAtom);
+      console.log('Keybindings updated:', this.keyBindings);
+    });
+  }
 
   init(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -72,7 +92,23 @@ class GameEngine {
 
   private setupEventListeners() {
     window.addEventListener('keydown', e => {
+      // Store key state
       this.keyState[e.key] = true;
+      
+      // Handle dialog advancement on any key press except Escape
+      if (this.gameState.isInDialog && e.key !== 'Escape') {
+        // Prevent default to avoid scrolling with space or arrows
+        e.preventDefault();
+        
+        // Advance dialog or close if on last message
+        this.advanceDialog();
+      }
+      
+      // Handle Escape key to close dialog immediately
+      if (this.gameState.isInDialog && e.key === 'Escape') {
+        this.closeDialog();
+        e.preventDefault();
+      }
     });
 
     window.addEventListener('keyup', e => {
@@ -92,23 +128,27 @@ class GameEngine {
   }
 
   private updatePlayer(deltaTime: number) {
+    // Don't allow player movement during dialog
+    if (this.gameState.isInDialog) return;
+    
     const player = this.gameState.player;
     let dx = 0;
     let dy = 0;
 
-    if (this.keyState['ArrowLeft']) {
+    // Check if any of the configured keys for each direction are pressed
+    if (this.keyBindings.left.some(key => this.keyState[key])) {
       dx -= 1;
       player.direction = 'left';
     }
-    if (this.keyState['ArrowRight']) {
+    if (this.keyBindings.right.some(key => this.keyState[key])) {
       dx += 1;
       player.direction = 'right';
     }
-    if (this.keyState['ArrowUp']) {
+    if (this.keyBindings.up.some(key => this.keyState[key])) {
       dy -= 1;
       player.direction = 'up';
     }
-    if (this.keyState['ArrowDown']) {
+    if (this.keyBindings.down.some(key => this.keyState[key])) {
       dy += 1;
       player.direction = 'down';
     }
@@ -159,17 +199,69 @@ class GameEngine {
           npc.direction = dy > 0 ? 'down' : 'up';
         }
 
-        // Set dialog based on player approach direction
-        if (player.direction === 'up') {
-          this.gameState.dialogText = "Beautiful day, isn't it?";
-        } else if (player.direction === 'down') {
-          this.gameState.dialogText = 'Welcome to the game!';
-        } else if (player.direction === 'left') {
-          this.gameState.dialogText = 'Press Space to close this dialog.';
-        } else {
-          this.gameState.dialogText = 'This game is built with Remix!';
+        // Check for interaction key (Space or Enter)
+        if (this.keyBindings.interact.some(key => this.keyState[key]) && !this.gameState.isInDialog) {
+          // Start dialog based on player approach direction
+          let dialogMessages: string[] = [];
+          
+          if (player.direction === 'up') {
+            dialogMessages = [
+              "Beautiful day, isn't it?",
+              "I've been enjoying the sunshine all day.",
+              "Hope you're having a wonderful adventure!"
+            ];
+          } else if (player.direction === 'down') {
+            dialogMessages = [
+              "Welcome to the game!",
+              "I'm so glad you're here.",
+              "There's so much to explore in this world."
+            ];
+          } else if (player.direction === 'left') {
+            dialogMessages = [
+              "Press Space or Enter to continue this dialog.",
+              "You can press Escape to skip the conversation.",
+              "Dialog will close when we're done talking."
+            ];
+          } else {
+            dialogMessages = [
+              "This game is built with Remix!",
+              "We're using React and TypeScript.",
+              "The state is managed with Jotai atoms."
+            ];
+          }
+          
+          this.startDialog(dialogMessages);
+          
+          // Reset key state to prevent immediate advancement
+          this.keyBindings.interact.forEach(key => {
+            this.keyState[key] = false;
+          });
         }
       }
+    }
+  }
+
+  private startDialog(messages: string[]) {
+    if (messages.length === 0) return;
+    
+    this.gameState.dialogMessages = messages;
+    this.gameState.dialogIndex = 0;
+    this.gameState.dialogText = messages[0];
+    this.gameState.isInDialog = true;
+  }
+
+  private advanceDialog() {
+    const { dialogMessages, dialogIndex } = this.gameState;
+    
+    if (dialogIndex < dialogMessages.length - 1) {
+      // Move to next message
+      this.gameState.dialogIndex++;
+      this.gameState.dialogText = dialogMessages[this.gameState.dialogIndex];
+      console.log(`Advanced to message ${this.gameState.dialogIndex + 1}/${dialogMessages.length}`);
+    } else {
+      // End of dialog when on the last message
+      console.log('Closing dialog from advanceDialog');
+      this.closeDialog();
     }
   }
 
@@ -234,7 +326,17 @@ class GameEngine {
   }
 
   closeDialog() {
+    console.log('Closing dialog');
+    // Clear all dialog state
     this.gameState.dialogText = null;
+    this.gameState.dialogMessages = [];
+    this.gameState.dialogIndex = 0;
+    this.gameState.isInDialog = false;
+    
+    // Add a small delay to prevent immediate re-opening of dialog
+    this.keyBindings.interact.forEach(key => {
+      this.keyState[key] = false;
+    });
   }
 }
 

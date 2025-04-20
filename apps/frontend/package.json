@@ -18,6 +18,8 @@
     "@remix-run/serve": "^2.16.5",
     "framer-motion": "^12.7.2",
     "isbot": "^4.1.0",
+    "jotai": "^2.12.3",
+    "kaplay": "^3001.0.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

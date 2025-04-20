@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import React from 'react';
 
 interface TitlePageProps {
   onStartGame: () => void;
@@ -8,6 +7,7 @@ interface TitlePageProps {
 
 export default function TitlePage({ onStartGame }: TitlePageProps) {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showControls, setShowControls] = useState(false);
 
   const handleStartGame = () => {
     setIsAnimating(true);
@@ -16,101 +16,129 @@ export default function TitlePage({ onStartGame }: TitlePageProps) {
     }, 1000);
   };
 
+  // Add keyboard shortcut to start game
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.code === 'Enter') {
+        handleStartGame();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-700 via-purple-500 to-pink-400 flex flex-col items-center justify-center p-4 overflow-hidden relative">
-      {/* Floating food elements */}
-      <motion.div
-        className="absolute w-16 h-16 bg-yellow-300 rounded-full opacity-70"
-        animate={{
-          x: [0, 20, 0],
-          y: [0, -30, 0],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        style={{ top: '20%', left: '15%' }}
-      />
-      <motion.div
-        className="absolute w-12 h-12 bg-green-400 rounded-full opacity-70"
-        animate={{
-          x: [0, -15, 0],
-          y: [0, 20, 0],
-        }}
-        transition={{
-          duration: 3.5,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        style={{ top: '60%', right: '20%' }}
-      />
-      <motion.div
-        className="absolute w-10 h-10 bg-blue-300 rounded-full opacity-70"
-        animate={{
-          x: [0, 25, 0],
-          y: [0, 15, 0],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        style={{ bottom: '25%', left: '25%' }}
-      />
+    <div className="min-h-screen w-full bg-gradient-to-b from-indigo-900 via-purple-800 to-pink-700 flex flex-col items-center justify-center p-4 overflow-hidden relative">
+      {/* Background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Stars */}
+        {Array.from({ length: 50 }).map((_, i) => (
+          <motion.div
+            key={`star-${i}`}
+            className="absolute bg-white rounded-full"
+            style={{
+              width: Math.random() * 3 + 1 + 'px',
+              height: Math.random() * 3 + 1 + 'px',
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              opacity: [0.2, 0.8, 0.2],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: Math.random() * 3 + 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
 
-      {/* Floating islands */}
-      <motion.div
-        className="absolute w-32 h-16 bg-green-600 rounded-full opacity-90"
-        animate={{
-          y: [0, -10, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        style={{ top: '30%', right: '30%' }}
-      />
-      <motion.div
-        className="absolute w-48 h-20 bg-green-700 rounded-full opacity-90"
-        animate={{
-          y: [0, 15, 0],
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        style={{ bottom: '20%', right: '15%' }}
-      />
-
-      {/* Title container */}
-      <motion.div
-        className="text-center z-10"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <motion.h1 
-          className="text-5xl md:text-7xl font-bold mb-2 text-yellow-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"
-          animate={{ 
-            scale: [1, 1.05, 1],
+        {/* Floating elements */}
+        <motion.div
+          className="absolute w-16 h-16 bg-yellow-300 rounded-full opacity-70"
+          animate={{
+            x: [0, 20, 0],
+            y: [0, -30, 0],
           }}
           transition={{
-            duration: 2,
+            duration: 4,
             repeat: Infinity,
             ease: "easeInOut"
           }}
+          style={{ top: '20%', left: '15%' }}
+        />
+        <motion.div
+          className="absolute w-12 h-12 bg-green-400 rounded-full opacity-70"
+          animate={{
+            x: [0, -15, 0],
+            y: [0, 20, 0],
+          }}
+          transition={{
+            duration: 3.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          style={{ top: '60%', right: '20%' }}
+        />
+        <motion.div
+          className="absolute w-10 h-10 bg-blue-300 rounded-full opacity-70"
+          animate={{
+            x: [0, 25, 0],
+            y: [0, 15, 0],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          style={{ bottom: '25%', left: '25%' }}
+        />
+      </div>
+
+      {/* Main content container */}
+      <motion.div
+        className="relative z-10 max-w-4xl w-full flex flex-col items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        {/* Title */}
+        <motion.div
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.2 }}
         >
-          Pudding Quest
-        </motion.h1>
-        <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-white italic drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-          The Jellyblade Chronicles
-        </h2>
+          <motion.h1 
+            className="text-6xl md:text-8xl font-bold mb-4 text-yellow-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+            animate={{ 
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            Pudding Quest
+          </motion.h1>
+          <h2 className="text-2xl md:text-4xl font-semibold text-white italic drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            The Jellyblade Chronicles
+          </h2>
+        </motion.div>
         
         {/* Character */}
-        <div className="relative w-64 h-64 mx-auto my-8">
+        <motion.div
+          className="relative w-64 h-64 mx-auto my-4"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
           <motion.div
             className="w-full h-full bg-contain bg-center bg-no-repeat"
             style={{ backgroundImage: "url('/peppin.svg')" }}
@@ -136,25 +164,75 @@ export default function TitlePage({ onStartGame }: TitlePageProps) {
               ease: "easeInOut"
             }}
           />
-        </div>
+        </motion.div>
 
         {/* Story snippet */}
-        <p className="text-white max-w-md mx-auto mb-8 text-center drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+        <motion.p 
+          className="text-white max-w-md mx-auto mb-8 text-center text-lg drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.7 }}
+        >
           In the colorful kingdom of Syralune, the Jellyblade has been accidentally eaten by the gluttonous slime-king Gloopius! 
           Join Peppin and friends to save the kingdom from the mischievous Snack Lords.
-        </p>
+        </motion.p>
 
-        {/* Start button */}
-        <motion.button
-          className="px-8 py-3 bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-bold rounded-full text-xl shadow-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleStartGame}
-          animate={isAnimating ? { scale: [1, 0], opacity: [1, 0] } : {}}
-          transition={{ duration: 0.5 }}
-        >
-          Begin Adventure!
-        </motion.button>
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <motion.button
+            className="px-8 py-3 bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-bold rounded-full text-xl shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleStartGame}
+            animate={isAnimating ? { scale: [1, 0], opacity: [1, 0] } : {}}
+            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          >
+            Begin Adventure!
+          </motion.button>
+          
+          <motion.button
+            className="px-6 py-2 bg-transparent border-2 border-white text-white font-semibold rounded-full text-lg hover:bg-white/10"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowControls(!showControls)}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            {showControls ? 'Hide Controls' : 'Show Controls'}
+          </motion.button>
+        </div>
+
+        {/* Controls */}
+        {showControls && (
+          <motion.div 
+            className="mt-6 p-4 bg-black/50 rounded-lg text-white max-w-md w-full"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <h3 className="text-xl font-bold mb-2">Game Controls</h3>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Arrow keys: Move character</li>
+              <li>Space: Interact / Continue dialog</li>
+              <li>F: Toggle fullscreen</li>
+              <li>ESC: Pause game</li>
+            </ul>
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Footer */}
+      <motion.div 
+        className="absolute bottom-4 text-white/70 text-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+      >
+        Press SPACE or ENTER to begin
       </motion.div>
     </div>
   );

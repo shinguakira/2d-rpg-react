@@ -1,20 +1,20 @@
 import type { Config } from 'tailwindcss';
 
 export default {
-  content: ['./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}'],
+  content: ['./app/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       fontFamily: {
-        sans: [
-          'Inter',
-          'ui-sans-serif',
-          'system-ui',
-          'sans-serif',
-          'Apple Color Emoji',
-          'Segoe UI Emoji',
-          'Segoe UI Symbol',
-          'Noto Color Emoji',
-        ],
+        gameboy: ['gameboy', 'monospace'],
+      },
+      width: {
+        'game': 'calc(var(--width) * 1px)',
+      },
+      height: {
+        'game': 'calc(var(--height) * 1px)',
+      },
+      colors: {
+        'font-color': 'var(--font-color)',
       },
     },
   },
