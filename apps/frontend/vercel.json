@@ -1,0 +1,14 @@
+{
+  "framework": "remix",
+  "buildCommand": "cd ../.. && npm run build --filter=apps-frontend",
+  "outputDirectory": "public",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {
+    "REMIX_PUBLIC_DEBUG_MODE": "false"
+  }
+}

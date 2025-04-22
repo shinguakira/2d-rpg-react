@@ -63,6 +63,81 @@ This will start:
 - Custom game engine built with Canvas API
 - Responsive design with mobile support
 
+## Deployment to Vercel
+
+### Frontend Deployment
+
+1. Create a `vercel.json` file in the `apps/frontend` directory:
+
+```json
+{
+  "framework": "remix",
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {
+    "REMIX_PUBLIC_DEBUG_MODE": "false"
+  }
+}
+```
+
+2. Install the Vercel CLI:
+
+```bash
+npm install -g vercel
+```
+
+3. Deploy the frontend:
+
+```bash
+cd apps/frontend
+vercel
+```
+
+4. Follow the prompts to link your project to a Vercel account.
+
+5. For subsequent deployments, you can use:
+
+```bash
+vercel --prod
+```
+
+### Backend Deployment (Optional)
+
+1. Create a separate Vercel project for the backend:
+
+```bash
+cd apps/backend
+vercel
+```
+
+2. Set the backend URL as an environment variable in your frontend project:
+
+```bash
+vercel env add REMIX_PUBLIC_API_URL https://your-backend-url.vercel.app
+```
+
+### Deploying from GitHub
+
+1. Push your repository to GitHub.
+
+2. Connect your GitHub repository to Vercel:
+   - Go to [vercel.com](https://vercel.com) and sign in
+   - Click "Add New..." > "Project"
+   - Select your GitHub repository
+   - Configure the project:
+     - Root Directory: `apps/frontend`
+     - Framework Preset: Remix
+   - Add environment variables if needed
+   - Click "Deploy"
+
+3. Vercel will automatically deploy your project and provide a URL.
+
 ## Map System
 
 The game features multiple maps with different tile sizes:
