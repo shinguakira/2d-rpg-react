@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { motion } from "framer-motion";
-import { gameEngine } from "~/lib/gameEngine";
+import { gameEngine } from "../lib/gameEngine";
 
 import { 
   dialogTextAtom, 
   isDialogVisibleAtom, 
   dialogMessagesAtom,
   dialogIndexAtom
-} from "~/lib/store";
+} from "../lib/store";
 import "../index.css";
 
 const variants = {
@@ -16,7 +16,7 @@ const variants = {
   closed: { opacity: 0, scale: 0.5 },
 };
 
-export default function TextBox() {
+export default function GameBoyTextBox() {
   const [isVisible, setIsVisible] = useAtom(isDialogVisibleAtom);
   const [isCloseRequest, setIsCloseRequest] = useState(false);
   const content = useAtomValue(dialogTextAtom);

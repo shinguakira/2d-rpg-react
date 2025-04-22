@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { gameTimeAtom, isSettingsOpenAtom } from '~/lib/store';
+import { gameTimeAtom, isSettingsOpenAtom } from '../lib/store';
 import { Settings as SettingsIcon } from 'lucide-react';
 import Settings from './Settings';
 

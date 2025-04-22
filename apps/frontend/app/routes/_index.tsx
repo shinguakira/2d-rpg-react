@@ -1,7 +1,7 @@
 import type { MetaFunction } from '@remix-run/node';
 import { useState } from 'react';
-import GameCanvas from '~/components/GameCanvas';
-import TitlePage from '~/components/TitlePage';
+import GameCanvas from '../components/GameCanvas';
+import TitlePage from '../components/TitlePage';
 
 export const meta: MetaFunction = () => {
   return [
@@ -20,7 +20,9 @@ export default function Index() {
   return (
     <>
       {!gameStarted ? (
-        <TitlePage onStartGame={handleStartGame} />
+        <div onClick={handleStartGame}>
+          <TitlePage />
+        </div>
       ) : (
         <div className="w-full h-screen overflow-hidden bg-black">
           <GameCanvas width={1920} height={1080} />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { motion, AnimatePresence } from 'framer-motion';
-import { keyBindingsAtom, isSettingsOpenAtom, KeyBindings, defaultKeyBindings } from '~/lib/store';
+import { keyBindingsAtom, isSettingsOpenAtom, KeyBindings, defaultKeyBindings } from '../lib/store';
 
 export default function Settings() {
   const [isOpen, setIsOpen] = useAtom(isSettingsOpenAtom);

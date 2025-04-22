@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAtom } from 'jotai';
-import { gameEngine, GameState } from '~/lib/gameEngine';
+import { gameEngine, GameState } from '../lib/gameEngine';
 import Dialog from './Dialog';
 import GameUI from './GameUI';
 import { 
@@ -9,9 +9,13 @@ import {
   gameTimeAtom,
   dialogMessagesAtom,
   dialogIndexAtom,
+  isSettingsOpenAtom,
   store
-} from '~/lib/store';
-import TextBox from './TextBobackx';
+} from '../lib/store';
+import GameBoyTextBox from './GameBoyTextBox';
+import SettingsIcon from './SettingsIcon';
+import Settings from './Settings';
+import DebugButton from './DebugButton';
 
 interface GameCanvasProps {
   width: number;
@@ -28,6 +32,7 @@ export default function GameCanvas({ width, height }: GameCanvasProps) {
   const [, setDialogMessages] = useAtom(dialogMessagesAtom);
   const [, setDialogIndex] = useAtom(dialogIndexAtom);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useAtom(isSettingsOpenAtom);
 
   // Handle full screen mode
   const toggleFullScreen = () => {
@@ -133,13 +138,21 @@ export default function GameCanvas({ width, height }: GameCanvasProps) {
       className="fixed inset-0 overflow-hidden bg-black flex flex-col"
       style={{ touchAction: 'none' }}
     >
-      <div className="absolute top-2 right-2 z-50">
+      <div className="absolute top-2 right-2 z-50 flex space-x-2">
+        <button 
+          onClick={() => setIsSettingsOpen(true)}
+          className="bg-black/50 text-white px-2 py-1 rounded hover:bg-black/70 text-xs flex items-center"
+        >
+          <SettingsIcon size={14} className="mr-1" />
+          Settings
+        </button>
         <button 
           onClick={toggleFullScreen}
           className="bg-black/50 text-white px-2 py-1 rounded hover:bg-black/70 text-xs"
         >
           {isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
         </button>
+        <DebugButton />
       </div>
 
       <div className="flex-grow flex items-center justify-center overflow-hidden">
@@ -157,7 +170,8 @@ export default function GameCanvas({ width, height }: GameCanvasProps) {
           }}
         />
       </div>
-      <TextBox />
+      <GameBoyTextBox />
+      {isSettingsOpen && <Settings />}
     </div>
   );
 }
