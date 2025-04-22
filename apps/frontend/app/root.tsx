@@ -1,8 +1,12 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import { useState } from 'react';
 
 import './tailwind.css';
 import GameBoyTextBox from './components/GameBoyTextBox';
+import TitlePage from './components/TitlePage';
 
 // Add global styles to remove scrollbars
 const globalStyles = `
@@ -39,7 +43,18 @@ export const links: LinksFunction = () => [
   },
 ];
 
+export async function loader() {
+  return json({
+    ENV: {
+      REMIX_PUBLIC_DEBUG_MODE: process.env.REMIX_PUBLIC_DEBUG_MODE || 'false'
+    }
+  });
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useLoaderData<typeof loader>();
+  const [showTitleScreen, setShowTitleScreen] = useState(true);
+  
   return (
     <html lang="en">
       <head>
@@ -49,10 +64,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
       </head>
       <body className="overflow-hidden">
-        {children}
-        <GameBoyTextBox />
+        {showTitleScreen ? (
+          <TitlePage onStartGame={() => setShowTitleScreen(false)} />
+        ) : (
+          <>
+            {children}
+            <GameBoyTextBox />
+          </>
+        )}
         <ScrollRestoration />
         <Scripts />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+          }}
+        />
       </body>
     </html>
   );

@@ -15,6 +15,7 @@ import {
 import GameBoyTextBox from './GameBoyTextBox';
 import SettingsIcon from './SettingsIcon';
 import Settings from './Settings';
+import DebugButton from './DebugButton';
 
 interface GameCanvasProps {
   width: number;
@@ -151,6 +152,7 @@ export default function GameCanvas({ width, height }: GameCanvasProps) {
         >
           {isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
         </button>
+        <DebugButton />
       </div>
 
       <div className="flex-grow flex items-center justify-center overflow-hidden">

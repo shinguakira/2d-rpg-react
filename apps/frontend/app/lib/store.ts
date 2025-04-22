@@ -20,6 +20,16 @@ export interface KeyBindings {
   interact: string[];
 }
 
+// Debug settings
+export const isDebugModeAtom = atom<boolean>(false);
+
+// Initialize debug mode from environment variables
+if (typeof window !== 'undefined') {
+  // For client-side, check if we have debug mode enabled
+  const debugMode = window.ENV?.REMIX_PUBLIC_DEBUG_MODE === 'true';
+  isDebugModeAtom.init = debugMode;
+}
+
 export const defaultKeyBindings: KeyBindings = {
   up: ['ArrowUp', 'w', 'W'],
   down: ['ArrowDown', 's', 'S'],
